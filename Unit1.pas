@@ -18,11 +18,17 @@ type
 
 CONST
   FPS_CAP = trunc(1000 / 25);
+  COLORS: array [0 .. 5] of integer = ($EF1111, $EFFE13, $00FF00, $00FFFF,
+    $0000FF, $FF00FF);
+  PIECES: array [1 .. 3] of array [1 .. 4] of array [1 .. 2] of integer =
+    (((0, 0), (1, 0), (1, 1), (1, 2)), ((0, 0), (1, 0), (0, 1), (1, 1)),
+    ((0, 0), (0, 1), (0, 2), (0, 3)));
 
 var
   GAME_INIT: boolean;
   GAME_TICK: LongInt;
   DELTA_TIME: integer;
+  COLOR_I: integer;
   Form1: TForm1;
 
 implementation
@@ -31,31 +37,32 @@ implementation
 
 procedure DrawGrid(c: TCanvas; form: TForm);
 var
-  I, size, size_x, size_y, curr_x, curr_y: integer;
+  I, size, size_x, size_y, curr_x, curr_y, piece_y: integer;
 begin
   size := 40;
-  size_x := 9;
+  size_x := 8;
   size_y := 13;
   c.brush.style := bsSolid;
-  c.brush.color := $ffff00;
-  c.pen.Style := psClear;
-  c.rectangle(0,0,form.width,form.height);
+  c.brush.color := clMenu;
+  c.pen.style := psClear;
+  c.rectangle(0, 0, form.width, form.height);
 
-  c.brush.color := $00ff00;
-  curr_x := (GAME_TICK mod (size_x*size_y)) mod size_x;
-  curr_y := trunc((GAME_TICK mod (size_x*size_y))/size_x);
-  c.Rectangle(15 + curr_x * size, 15 + curr_y * size,
-      15 + size + curr_x * size, 15 + size + curr_y * size);
+  c.brush.color := COLORS[COLOR_I];
+  curr_x := (GAME_TICK mod (size_x * size_y)) mod size_x;
+  curr_y := trunc((GAME_TICK mod (size_x * size_y)) / size_x);
+  c.rectangle(15 + curr_x * size, 15 + curr_y * size, 15 + size + curr_x * size,
+    15 + size + curr_y * size);
   c.brush.style := bsClear;
-  c.pen.Style := psSolid;
-  for I := 1 to size_x * size_y do
+  c.pen.style := psSolid;
+  piece_y := (trunc(GAME_TICK/10) mod size_y;
+  for I := 1 to length(PIECES[2]) do
   begin
-    c.Rectangle(15 + (I mod size_x) * size, 15 + (I mod size_y) * size,
-      15 + size + (I mod size_x) * size, 15 + size + (I mod size_y) * size);
+    c.rectangle(15 + (PIECES[2][I][1] + 3) * size, 15 + (PIECES[2][I][2] + piece_y) *
+      size, 15 + size + (PIECES[2][I][1] + 3) * size,
+      15 + size + (PIECES[2][I][2] + piece_y) * size);
   end;
   Application.ProcessMessages;
 end;
-
 procedure Pause(ms: integer);
 var
   current_time: LongInt;
