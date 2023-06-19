@@ -10,6 +10,7 @@ type
   TForm1 = class(TForm)
     procedure FormCreate(Sender: TObject);
     procedure IdleHandler(Sender: TObject; var Done: boolean);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     { Private-Deklarationen }
   public
@@ -87,8 +88,21 @@ begin
   DrawGrid(Form1.Canvas, Form1);
 
   DELTA_TIME := LongInt(GetTickCount) - time_index;
-  if DELTA_TIME < FPS_CAP then Pause(FPS_CAP - DELTA_TIME);
+  if DELTA_TIME < FPS_CAP then
+    Pause(FPS_CAP - DELTA_TIME);
   Application.ProcessMessages;
+end;
+
+procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  case Key of
+    32:
+      begin
+        inc(COLOR_I);
+        COLOR_I := COLOR_I mod length(COLORS)
+      end;
+  end;
 end;
 
 procedure TForm1.IdleHandler(Sender: TObject; var Done: boolean);
