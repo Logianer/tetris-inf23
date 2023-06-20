@@ -79,7 +79,7 @@ begin
   Application.ProcessMessages;
 end;
 
-procedure clearLine(line_y: integer; var grid: TGrid);
+procedure clearRow(line_y: integer; var grid: TGrid);
 var
   I, J, tmp: Integer;
 begin
@@ -131,7 +131,7 @@ begin
   time_index := LongInt(GetTickCount);
 
   DrawGrid(Form1.Canvas, Form1);
-  if (GAME_TICK mod 8) = 0 then clearLine(12, PIECE_GRID);
+  if (GAME_TICK mod 8) = 0 then clearRow(12, PIECE_GRID);
 
   DELTA_TIME := LongInt(GetTickCount) - time_index;
   if DELTA_TIME < FPS_CAP then
@@ -178,10 +178,14 @@ begin
   begin
     for J := 0 to 12 do GAME_GRID[I][J] := 0
   end;
+  GAME_GRID[0][12] := 2;
+  GAME_GRID[0][11] := 2;
+  GAME_GRID[0][10] := 2;
+  GAME_GRID[1][12] := 2;
   PIECE_GRID := GAME_GRID;
   NEXT_PIECE := random(length(PIECES))+1;
   SpawnNextPiece();
-  clearLine(12, PIECE_GRID);
+  clearRow(12, PIECE_GRID);
 end;
 
 end.
