@@ -120,7 +120,7 @@ begin
   Application.ProcessMessages;
 end;
 
-procedure ClearGrid(grid: TGrid);
+procedure ClearGrid(var grid: TGrid);
 var I, J: integer;
 begin
  for I := 0 to 7 do
