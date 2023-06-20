@@ -79,6 +79,24 @@ begin
   Application.ProcessMessages;
 end;
 
+procedure clearLine(line_y: integer; var grid: TGrid);
+var
+  I, J, tmp: Integer;
+begin
+  for I := line_y downto 0 do
+  begin
+    for J := 0 to 7 do
+    begin
+      if I=0 then grid[J][I] := 0
+      else
+      begin
+        grid[J][I] := grid[J][I-1];
+      end;
+    end;
+  end;
+
+end;
+
 procedure SpawnNextPiece();
 var
   I, color: Integer;
@@ -113,6 +131,7 @@ begin
   time_index := LongInt(GetTickCount);
 
   DrawGrid(Form1.Canvas, Form1);
+  if (GAME_TICK mod 8) = 0 then clearLine(12, PIECE_GRID);
 
   DELTA_TIME := LongInt(GetTickCount) - time_index;
   if DELTA_TIME < FPS_CAP then
@@ -127,24 +146,6 @@ begin
   begin
     for J := 0 to 12 do grid[I][J] := 0
   end;
-end;
-
-procedure clearLine(line_y: integer; var grid: TGrid);
-var
-  I, J, tmp: Integer;
-begin
-  for I := line_y downto 0 do
-  begin
-    for J := 0 to 7 do
-    begin
-      if I=0 then grid[J][I] := 0
-      else
-      begin
-        grid[J][I] := grid[J][I-1];
-      end;
-    end;
-  end;
-
 end;
 //-------------------------------------------------------------------------------------
 procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word;
