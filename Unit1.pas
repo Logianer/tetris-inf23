@@ -129,6 +129,24 @@ begin
   end;
 end;
 
+procedure clearLine(line_y: integer; var grid: TGrid);
+var
+  I, J, tmp: Integer;
+begin
+  for I := line_y downto 0 do
+  begin
+    for J := 0 to 7 do
+    begin
+      if I=0 then grid[J][I] := 0
+      else
+      begin
+        grid[J][I] := grid[J][I-1];
+      end;
+    end;
+  end;
+
+end;
+//-------------------------------------------------------------------------------------
 procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -162,6 +180,7 @@ begin
   PIECE_GRID := GAME_GRID;
   NEXT_PIECE := random(length(PIECES))+1;
   SpawnNextPiece();
+  clearLine(12, PIECE_GRID);
 end;
 
 end.
