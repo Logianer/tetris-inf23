@@ -17,6 +17,8 @@ type
     { Public-Deklarationen }
   end;
 
+type TGrid = array[0..7, 0..12] of integer;
+
 CONST
   FPS_CAP = trunc(1000 / 25);
   COLORS: array [0 .. 6] of integer = (clMenu, $EF1111, $EFFE13, $00FF00, $00FFFF,
@@ -30,7 +32,8 @@ var
   GAME_TICK: LongInt;
   DELTA_TIME: integer;
   COLOR_I: integer;
-  GAME_GRID: array[0..8, 0..13] of integer;
+  GAME_GRID: TGrid;
+  PIECE_GRID: TGrid;
   Form1: TForm1;
 
 implementation
@@ -39,9 +42,9 @@ implementation
 
 procedure DrawGrid(c: TCanvas; form: TForm);
 var
-  I, size, size_x, size_y, curr_x, curr_y, piece_y: integer;
+  I, J, size, size_x, size_y: integer;
 begin
-  size := 40;
+  size := 35;
   size_x := 8;
   size_y := 13;
   c.brush.style := bsSolid;
@@ -49,22 +52,27 @@ begin
   c.pen.style := psClear;
   c.rectangle(0, 0, form.width, form.height);
 
-  c.brush.color := COLORS[COLOR_I];
-  curr_x := (GAME_TICK mod (size_x * size_y)) mod size_x;
-  curr_y := trunc((GAME_TICK mod (size_x * size_y)) / size_x);
-  c.rectangle(15 + curr_x * size, 15 + curr_y * size, 15 + size + curr_x * size,
-    15 + size + curr_y * size);
+
   c.brush.style := bsClear;
   c.pen.style := psSolid;
-  piece_y := (trunc(GAME_TICK/10) mod size_y);
-  for I := 1 to length(PIECES[2]) do
+
+  for I := 0 to length(GAME_GRID)-1 do
   begin
-    c.rectangle(15 + (PIECES[2][I][1] + 3) * size, 15 + (PIECES[2][I][2] + piece_y) *
-      size, 15 + size + (PIECES[2][I][1] + 3) * size,
-      15 + size + (PIECES[2][I][2] + piece_y) * size);
+    for J := 0 to length(GAME_GRID[0])-1 do
+    begin
+         c.brush.color := COLORS[GAME_GRID[I][J]];
+    c.rectangle(15 + I * size, 15 + J * size, 15 + size + I * size,
+      15 + size + J * size);
+    end;
   end;
   Application.ProcessMessages;
 end;
+
+procedure SpawnPiece(piece_i: integer);
+begin
+
+end;
+
 procedure Pause(ms: integer);
 var
   current_time: LongInt;
@@ -113,10 +121,17 @@ begin
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
+var
+  I, J: Integer;
 begin
   GAME_TICK := 0;
   DELTA_TIME := 0;
   Application.OnIdle := IdleHandler;
+  for I := 0 to 7 do
+  begin
+    for J := 0 to 12 do GAME_GRID[I][J] := 0
+  end;
+
 end;
 
 end.
