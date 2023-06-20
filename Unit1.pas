@@ -23,17 +23,17 @@ CONST
   FPS_CAP = trunc(1000 / 25);
   COLORS: array [0 .. 6] of integer = (clMenu, $EF1111, $EFFE13, $00FF00, $00FFFF,
     $0000FF, $FF00FF);
-  PIECES: array [1 .. 3] of array [1 .. 4] of array [1 .. 2] of integer =
+  PIECES: array [1 .. 4] of array [1 .. 4] of array [1 .. 2] of integer =
     (((0, 0), (1, 0), (1, 1), (1, 2)), ((0, 0), (1, 0), (0, 1), (1, 1)),
-    ((0, 0), (0, 1), (0, 2), (0, 3)));
+    ((0, 0), (0, 1), (0, 2), (0, 3)),((0,0),(1,0),(1,1),(2,0)));
 
 var
   GAME_INIT: boolean;
   GAME_TICK: LongInt;
   DELTA_TIME: integer;
-  COLOR_I: integer;
   GAME_GRID: TGrid;
   PIECE_GRID: TGrid;
+  NEXT_PIECE: Integer;
   Form1: TForm1;
 
 implementation
@@ -55,7 +55,7 @@ begin
 
   c.brush.style := bsClear;
   c.pen.style := psSolid;
-
+  // DRAW GRID
   for I := 0 to length(GAME_GRID)-1 do
   begin
     for J := 0 to length(GAME_GRID[0])-1 do
@@ -65,12 +65,31 @@ begin
       15 + size + J * size);
     end;
   end;
+  // DRAW PIECE
+  for I := 0 to length(PIECE_GRID)-1 do
+  begin
+    for J := 0 to length(PIECE_GRID[0])-1 do
+    begin
+    c.brush.color := COLORS[PIECE_GRID[I][J]];
+    if PIECE_GRID[I][J] = 0 then c.Brush.Style := bsClear;
+    
+    c.rectangle(15 + I * size, 15 + J * size, 15 + size + I * size,
+      15 + size + J * size);
+    end;
+  end;
   Application.ProcessMessages;
 end;
 
-procedure SpawnPiece(piece_i: integer);
+procedure SpawnNextPiece();
+var
+  I, color: Integer;
 begin
-
+  color := random(6)+1;
+  for I := 1 to 4 do
+  begin
+    PIECE_GRID[3+PIECES[NEXT_PIECE][I][1]][0+PIECES[NEXT_PIECE][I][2]] := color
+  end;
+  NEXT_PIECE := random(length(PIECES)-1)+1;
 end;
 
 procedure Pause(ms: integer);
@@ -102,14 +121,23 @@ begin
   Application.ProcessMessages;
 end;
 
+procedure ClearGrid(grid: TGrid);
+var I, J: integer;
+begin
+ for I := 0 to 7 do
+  begin
+    for J := 0 to 12 do grid[I][J] := 0
+  end;
+end;
+
 procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   case Key of
     32:
       begin
-        inc(COLOR_I);
-        COLOR_I := COLOR_I mod length(COLORS)
+        ClearGrid(PIECE_GRID);
+        SpawnNextPiece();
       end;
   end;
 end;
@@ -124,6 +152,7 @@ procedure TForm1.FormCreate(Sender: TObject);
 var
   I, J: Integer;
 begin
+  Randomize;
   GAME_TICK := 0;
   DELTA_TIME := 0;
   Application.OnIdle := IdleHandler;
@@ -131,7 +160,9 @@ begin
   begin
     for J := 0 to 12 do GAME_GRID[I][J] := 0
   end;
-
+  PIECE_GRID := GAME_GRID;
+  NEXT_PIECE := random(length(PIECES)-1)+1;
+  SpawnNextPiece();
 end;
 
 end.
