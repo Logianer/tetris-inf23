@@ -3,8 +3,8 @@ object Form1: TForm1
   Top = 0
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Tetris'
-  ClientHeight = 480
-  ClientWidth = 480
+  ClientHeight = 441
+  ClientWidth = 464
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

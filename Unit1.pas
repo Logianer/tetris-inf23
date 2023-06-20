@@ -19,7 +19,7 @@ type
 
 CONST
   FPS_CAP = trunc(1000 / 25);
-  COLORS: array [0 .. 5] of integer = ($EF1111, $EFFE13, $00FF00, $00FFFF,
+  COLORS: array [0 .. 6] of integer = (clMenu, $EF1111, $EFFE13, $00FF00, $00FFFF,
     $0000FF, $FF00FF);
   PIECES: array [1 .. 3] of array [1 .. 4] of array [1 .. 2] of integer =
     (((0, 0), (1, 0), (1, 1), (1, 2)), ((0, 0), (1, 0), (0, 1), (1, 1)),
@@ -30,6 +30,7 @@ var
   GAME_TICK: LongInt;
   DELTA_TIME: integer;
   COLOR_I: integer;
+  GAME_GRID: array[0..8, 0..13] of integer;
   Form1: TForm1;
 
 implementation
@@ -55,7 +56,7 @@ begin
     15 + size + curr_y * size);
   c.brush.style := bsClear;
   c.pen.style := psSolid;
-  piece_y := (trunc(GAME_TICK/10) mod size_y;
+  piece_y := (trunc(GAME_TICK/10) mod size_y);
   for I := 1 to length(PIECES[2]) do
   begin
     c.rectangle(15 + (PIECES[2][I][1] + 3) * size, 15 + (PIECES[2][I][2] + piece_y) *
