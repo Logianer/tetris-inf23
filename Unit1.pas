@@ -51,10 +51,9 @@ begin
   c.brush.color := clMenu;
   c.pen.style := psClear;
   c.rectangle(0, 0, form.width, form.height);
-
-
   c.brush.style := bsClear;
   c.pen.style := psSolid;
+
   // DRAW GRID
   for I := 0 to length(GAME_GRID)-1 do
   begin
@@ -89,7 +88,7 @@ begin
   begin
     PIECE_GRID[3+PIECES[NEXT_PIECE][I][1]][0+PIECES[NEXT_PIECE][I][2]] := color
   end;
-  NEXT_PIECE := random(length(PIECES)-1)+1;
+  NEXT_PIECE := random(length(PIECES))+1;
 end;
 
 procedure Pause(ms: integer);
@@ -161,7 +160,7 @@ begin
     for J := 0 to 12 do GAME_GRID[I][J] := 0
   end;
   PIECE_GRID := GAME_GRID;
-  NEXT_PIECE := random(length(PIECES)-1)+1;
+  NEXT_PIECE := random(length(PIECES))+1;
   SpawnNextPiece();
 end;
 
