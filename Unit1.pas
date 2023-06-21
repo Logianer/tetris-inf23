@@ -132,9 +132,10 @@ begin
   inc(GAME_TICK);
   time_index := LongInt(GetTickCount);
 
-  if ((GAME_TICK mod 8) = 0) then begin
-  if (CheckCollision() = false) then AttachPiece()
-  else clearRow(12, PIECE_GRID);
+  if ((GAME_TICK mod 8) = 0) then
+  begin
+    if CheckCollision then AttachPiece()
+    else clearRow(12, PIECE_GRID);
   end;
 
   DrawGrid(Form1.Canvas, Form1);
@@ -170,8 +171,6 @@ begin
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
-var
-  I: Integer;
 begin
   Randomize;
   GAME_TICK := 0;
@@ -180,12 +179,11 @@ begin
   ClearGrid(GAME_GRID);
   GAME_GRID[12*8] := 4;
   GAME_GRID[12*8+1] := 4;
-  GAME_GRID[11*8] := 4;
+  GAME_GRID[11*8+2] := 4;
   GAME_GRID[11*8+1] := 4;
-  PIECE_GRID := GAME_GRID;
+  ClearGrid(PIECE_GRID);
   NEXT_PIECE := random(length(PIECES))+1;
   SpawnNextPiece();
-  clearRow(12, PIECE_GRID);
 end;
 
 end.
