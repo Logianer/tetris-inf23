@@ -3,8 +3,7 @@ unit Unit1;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics,
-  Controls, Forms, Dialogs, Vcl.StdCtrls;
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms, Dialogs, Vcl.StdCtrls;
 
 type
   TForm1 = class(TForm)
@@ -17,7 +16,7 @@ type
     { Public-Deklarationen }
   end;
 
-type TGrid = array[0..7, 0..12] of integer;
+type TGrid = array[0..103] of integer;
 
 CONST
   FPS_CAP = trunc(1000 / 30);
@@ -42,7 +41,7 @@ implementation
 
 procedure DrawGrid(c: TCanvas; form: TForm);
 var
-  I, J, size, size_x, size_y: integer;
+  I, size, size_x, size_y: integer;
 begin
   size := 35;
   size_x := 8;
@@ -57,41 +56,29 @@ begin
   // DRAW GRID
   for I := 0 to length(GAME_GRID)-1 do
   begin
-    for J := 0 to length(GAME_GRID[0])-1 do
-    begin
-         c.brush.color := COLORS[GAME_GRID[I][J]];
-    c.rectangle(15 + I * size, 15 + J * size, 15 + size + I * size,
-      15 + size + J * size);
-    end;
+    c.brush.color := COLORS[GAME_GRID[I]];
+    c.rectangle(15 + (I mod 8) * size, 15 + trunc(I/8) * size, 15 + size + (I mod 8)* size, 15 + size + trunc(I/8) * size);
   end;
   // DRAW PIECE
   for I := 0 to length(PIECE_GRID)-1 do
   begin
-    for J := 0 to length(PIECE_GRID[0])-1 do
-    begin
-    c.brush.color := COLORS[PIECE_GRID[I][J]];
-    if PIECE_GRID[I][J] = 0 then c.Brush.Style := bsClear;
-    
-    c.rectangle(15 + I * size, 15 + J * size, 15 + size + I * size,
-      15 + size + J * size);
-    end;
+    c.brush.color := COLORS[PIECE_GRID[I]];
+    if PIECE_GRID[I] = 0 then c.Brush.Style := bsClear;
+    c.rectangle(15 + (I mod 8) * size, 15 + trunc(I/8) * size, 15 + size + (I mod 8)* size, 15 + size + trunc(I/8) * size);
   end;
   Application.ProcessMessages;
 end;
 
 procedure clearRow(line_y: integer; var grid: TGrid);
 var
-  I, J, tmp: Integer;
+  I: Integer;
 begin
-  for I := line_y downto 0 do
+  for I := 7+(line_y*8) downto 0 do
   begin
-    for J := 0 to 7 do
-    begin
-      if I=0 then grid[J][I] := 0
+      if trunc(I/8) = 0 then grid[I] := 0
       else
       begin
-        grid[J][I] := grid[J][I-1];
-      end;
+        grid[I] := grid[I - 8];
     end;
   end;
 
@@ -104,7 +91,7 @@ begin
   color := random(6)+1;
   for I := 1 to 4 do
   begin
-    PIECE_GRID[3+PIECES[NEXT_PIECE][I][1]][0+PIECES[NEXT_PIECE][I][2]] := color
+    PIECE_GRID[3+PIECES[NEXT_PIECE][I][1]+(PIECES[NEXT_PIECE][I][2]*8)] := color
   end;
   NEXT_PIECE := random(length(PIECES))+1;
 end;
@@ -128,17 +115,13 @@ end;
 function CheckCollision(): boolean;
 var
   I: Integer;
-  J: Integer;
   collide: boolean;
 begin
   collide := false;
-  for I := 0 to 7 do
+  for I := 0 to 103 do
   begin
-    for J := 0 to 12 do
-    begin
-      if (J = 12) and (PIECE_GRID[I][J] <> 0) then collide := true
-      else if (PIECE_GRID[I][J] <> 0) and (GAME_GRID[I][J+1] <> 0) then collide := true;
-    end;
+      if (trunc(I/8) = 12) and (PIECE_GRID[I] <> 0) then collide := true
+      else if (PIECE_GRID[I] <> 0) and (GAME_GRID[I+8] <> 0) then collide := true;
   end;
   CheckCollision := collide;
 end;
@@ -163,12 +146,9 @@ begin
 end;
 
 procedure ClearGrid(var grid: TGrid);
-var I, J: integer;
+var I: integer;
 begin
- for I := 0 to 7 do
-  begin
-    for J := 0 to 12 do grid[I][J] := 0
-  end;
+ for I := 0 to length(grid)-1 do grid[I] := 0
 end;
 //-------------------------------------------------------------------------------------
 procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word;
@@ -191,20 +171,17 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 var
-  I, J: Integer;
+  I: Integer;
 begin
   Randomize;
   GAME_TICK := 0;
   DELTA_TIME := 0;
   Application.OnIdle := IdleHandler;
-  for I := 0 to 7 do
-  begin
-    for J := 0 to 12 do GAME_GRID[I][J] := 0
-  end;
-  GAME_GRID[0][12] := 3;
-  GAME_GRID[2][11] := 3;
-  GAME_GRID[2][10] := 3;
-  GAME_GRID[3][12] := 3;
+  ClearGrid(GAME_GRID);
+  GAME_GRID[12*8] := 4;
+  GAME_GRID[12*8+1] := 4;
+  GAME_GRID[11*8] := 4;
+  GAME_GRID[11*8+1] := 4;
   PIECE_GRID := GAME_GRID;
   NEXT_PIECE := random(length(PIECES))+1;
   SpawnNextPiece();
