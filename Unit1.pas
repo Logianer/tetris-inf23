@@ -83,7 +83,47 @@ begin
   end;
 
 end;
+procedure MovePiece(direction: boolean);
+// direction: true-left | false-right
+var
+  I: Integer;
+begin
+  if direction then
+  begin
+  // PRECHECK
+  for I := 0 to 103 do if (I mod 8 = 0) and (PIECE_GRID[I] <> 0) then Abort;
+   // MODIFY
+   for I := 0 to 103 do
+    begin
+      if (I mod 8) = 7 then PIECE_GRID[I] := 0
+      else if (I mod 8 = 0) and (PIECE_GRID[I] <> 0) then Abort
+      else
+      begin
+        PIECE_GRID[I] := PIECE_GRID[I + 1];
+      end;
+    end;
+  end else
+  begin
+    // PRECHECK
+    for I := 103 downto 0 do if (I mod 8 = 7) and (PIECE_GRID[I] <> 0) then Abort;
+    // MODIFY
+    for I := 103 downto 0 do
+    begin
+      if (I mod 8) = 0 then PIECE_GRID[I] := 0
+      else
+      begin
+        PIECE_GRID[I] := PIECE_GRID[I - 1];
+      end;
+    end;
+  end;
 
+
+end;
+procedure ClearGrid(var grid: TGrid);
+var I: integer;
+begin
+ for I := 0 to length(grid)-1 do grid[I] := 0
+end;
 procedure SpawnNextPiece();
 var
   I, color: Integer;
@@ -94,10 +134,6 @@ begin
     PIECE_GRID[3+PIECES[NEXT_PIECE][I][1]+(PIECES[NEXT_PIECE][I][2]*8)] := color
   end;
   NEXT_PIECE := random(length(PIECES))+1;
-end;
-procedure AttachPiece();
-begin
-  // TODO move current PIECE_GRID state to GAME_GRID;
 end;
 procedure Pause(ms: integer);
 var
@@ -111,6 +147,15 @@ begin
     Application.ProcessMessages;
     current_time := GetTickCount;
   end;
+end;
+procedure AttachPiece();
+var
+  I: Integer;
+begin
+  for I := 0 to 103 do if PIECE_GRID[I] <> 0 then GAME_GRID[I] := PIECE_GRID[I];
+  ClearGrid(PIECE_GRID);
+  Pause(1000);
+  SpawnNextPiece();
 end;
 function CheckCollision(): boolean;
 var
@@ -145,12 +190,6 @@ begin
     Pause(FPS_CAP - DELTA_TIME);
   Application.ProcessMessages;
 end;
-
-procedure ClearGrid(var grid: TGrid);
-var I: integer;
-begin
- for I := 0 to length(grid)-1 do grid[I] := 0
-end;
 //-------------------------------------------------------------------------------------
 procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
@@ -160,6 +199,14 @@ begin
       begin
         ClearGrid(PIECE_GRID);
         SpawnNextPiece();
+      end;
+    37, 65:
+      begin
+        MovePiece(true);
+      end;
+    39, 68:
+      begin
+        MovePiece(false);
       end;
   end;
 end;
@@ -177,10 +224,10 @@ begin
   DELTA_TIME := 0;
   Application.OnIdle := IdleHandler;
   ClearGrid(GAME_GRID);
-  GAME_GRID[12*8] := 4;
-  GAME_GRID[12*8+1] := 4;
+  GAME_GRID[12*8+3] := 4;
+  GAME_GRID[12*8+2] := 4;
   GAME_GRID[11*8+2] := 4;
-  GAME_GRID[11*8+1] := 4;
+  GAME_GRID[11*8+3] := 4;
   ClearGrid(PIECE_GRID);
   NEXT_PIECE := random(length(PIECES))+1;
   SpawnNextPiece();
