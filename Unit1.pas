@@ -3,8 +3,7 @@ unit Unit1;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics,
-  Controls, Forms, Dialogs, Vcl.StdCtrls;
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms, Dialogs, Vcl.StdCtrls;
 
 type
   TForm1 = class(TForm)
@@ -17,10 +16,10 @@ type
     { Public-Deklarationen }
   end;
 
-type TGrid = array[0..7, 0..12] of integer;
+type TGrid = array[0..103] of integer;
 
 CONST
-  FPS_CAP = trunc(1000 / 25);
+  FPS_CAP = trunc(1000 / 30);
   COLORS: array [0 .. 6] of integer = (clMenu, $EF1111, $EFFE13, $00FF00, $00FFFF,
     $0000FF, $FF00FF);
   PIECES: array [1 .. 4] of array [1 .. 4] of array [1 .. 2] of integer =
@@ -42,7 +41,7 @@ implementation
 
 procedure DrawGrid(c: TCanvas; form: TForm);
 var
-  I, J, size, size_x, size_y: integer;
+  I, size, size_x, size_y: integer;
 begin
   size := 35;
   size_x := 8;
@@ -57,41 +56,29 @@ begin
   // DRAW GRID
   for I := 0 to length(GAME_GRID)-1 do
   begin
-    for J := 0 to length(GAME_GRID[0])-1 do
-    begin
-         c.brush.color := COLORS[GAME_GRID[I][J]];
-    c.rectangle(15 + I * size, 15 + J * size, 15 + size + I * size,
-      15 + size + J * size);
-    end;
+    c.brush.color := COLORS[GAME_GRID[I]];
+    c.rectangle(15 + (I mod 8) * size, 15 + trunc(I/8) * size, 15 + size + (I mod 8)* size, 15 + size + trunc(I/8) * size);
   end;
   // DRAW PIECE
   for I := 0 to length(PIECE_GRID)-1 do
   begin
-    for J := 0 to length(PIECE_GRID[0])-1 do
-    begin
-    c.brush.color := COLORS[PIECE_GRID[I][J]];
-    if PIECE_GRID[I][J] = 0 then c.Brush.Style := bsClear;
-    
-    c.rectangle(15 + I * size, 15 + J * size, 15 + size + I * size,
-      15 + size + J * size);
-    end;
+    c.brush.color := COLORS[PIECE_GRID[I]];
+    if PIECE_GRID[I] = 0 then c.Brush.Style := bsClear;
+    c.rectangle(15 + (I mod 8) * size, 15 + trunc(I/8) * size, 15 + size + (I mod 8)* size, 15 + size + trunc(I/8) * size);
   end;
   Application.ProcessMessages;
 end;
 
 procedure clearRow(line_y: integer; var grid: TGrid);
 var
-  I, J, tmp: Integer;
+  I: Integer;
 begin
-  for I := line_y downto 0 do
+  for I := 7+(line_y*8) downto 0 do
   begin
-    for J := 0 to 7 do
-    begin
-      if I=0 then grid[J][I] := 0
+      if trunc(I/8) = 0 then grid[I] := 0
       else
       begin
-        grid[J][I] := grid[J][I-1];
-      end;
+        grid[I] := grid[I - 8];
     end;
   end;
 
@@ -104,11 +91,14 @@ begin
   color := random(6)+1;
   for I := 1 to 4 do
   begin
-    PIECE_GRID[3+PIECES[NEXT_PIECE][I][1]][0+PIECES[NEXT_PIECE][I][2]] := color
+    PIECE_GRID[3+PIECES[NEXT_PIECE][I][1]+(PIECES[NEXT_PIECE][I][2]*8)] := color
   end;
   NEXT_PIECE := random(length(PIECES))+1;
 end;
-
+procedure AttachPiece();
+begin
+  // TODO move current PIECE_GRID state to GAME_GRID;
+end;
 procedure Pause(ms: integer);
 var
   current_time: LongInt;
@@ -122,7 +112,19 @@ begin
     current_time := GetTickCount;
   end;
 end;
-
+function CheckCollision(): boolean;
+var
+  I: Integer;
+  collide: boolean;
+begin
+  collide := false;
+  for I := 0 to 103 do
+  begin
+      if (trunc(I/8) = 12) and (PIECE_GRID[I] <> 0) then collide := true
+      else if (PIECE_GRID[I] <> 0) and (GAME_GRID[I+8] <> 0) then collide := true;
+  end;
+  CheckCollision := collide;
+end;
 procedure GameLoop;
 var
   time_index: LongInt;
@@ -130,8 +132,13 @@ begin
   inc(GAME_TICK);
   time_index := LongInt(GetTickCount);
 
+  if ((GAME_TICK mod 8) = 0) then
+  begin
+    if CheckCollision then AttachPiece()
+    else clearRow(12, PIECE_GRID);
+  end;
+
   DrawGrid(Form1.Canvas, Form1);
-  if (GAME_TICK mod 8) = 0 then clearRow(12, PIECE_GRID);
 
   DELTA_TIME := LongInt(GetTickCount) - time_index;
   if DELTA_TIME < FPS_CAP then
@@ -140,12 +147,9 @@ begin
 end;
 
 procedure ClearGrid(var grid: TGrid);
-var I, J: integer;
+var I: integer;
 begin
- for I := 0 to 7 do
-  begin
-    for J := 0 to 12 do grid[I][J] := 0
-  end;
+ for I := 0 to length(grid)-1 do grid[I] := 0
 end;
 //-------------------------------------------------------------------------------------
 procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word;
@@ -167,25 +171,19 @@ begin
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
-var
-  I, J: Integer;
 begin
   Randomize;
   GAME_TICK := 0;
   DELTA_TIME := 0;
   Application.OnIdle := IdleHandler;
-  for I := 0 to 7 do
-  begin
-    for J := 0 to 12 do GAME_GRID[I][J] := 0
-  end;
-  GAME_GRID[0][12] := 2;
-  GAME_GRID[0][11] := 2;
-  GAME_GRID[0][10] := 2;
-  GAME_GRID[1][12] := 2;
-  PIECE_GRID := GAME_GRID;
+  ClearGrid(GAME_GRID);
+  GAME_GRID[12*8] := 4;
+  GAME_GRID[12*8+1] := 4;
+  GAME_GRID[11*8+2] := 4;
+  GAME_GRID[11*8+1] := 4;
+  ClearGrid(PIECE_GRID);
   NEXT_PIECE := random(length(PIECES))+1;
   SpawnNextPiece();
-  clearRow(12, PIECE_GRID);
 end;
 
 end.
