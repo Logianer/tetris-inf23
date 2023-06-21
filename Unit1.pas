@@ -20,7 +20,7 @@ type
 type TGrid = array[0..7, 0..12] of integer;
 
 CONST
-  FPS_CAP = trunc(1000 / 25);
+  FPS_CAP = trunc(1000 / 30);
   COLORS: array [0 .. 6] of integer = (clMenu, $EF1111, $EFFE13, $00FF00, $00FFFF,
     $0000FF, $FF00FF);
   PIECES: array [1 .. 4] of array [1 .. 4] of array [1 .. 2] of integer =
@@ -108,7 +108,10 @@ begin
   end;
   NEXT_PIECE := random(length(PIECES))+1;
 end;
-
+procedure AttachPiece();
+begin
+  // TODO move current PIECE_GRID state to GAME_GRID;
+end;
 procedure Pause(ms: integer);
 var
   current_time: LongInt;
@@ -122,7 +125,23 @@ begin
     current_time := GetTickCount;
   end;
 end;
-
+function CheckCollision(): boolean;
+var
+  I: Integer;
+  J: Integer;
+  collide: boolean;
+begin
+  collide := false;
+  for I := 0 to 7 do
+  begin
+    for J := 0 to 12 do
+    begin
+      if (J = 12) and (PIECE_GRID[I][J] <> 0) then collide := true
+      else if (PIECE_GRID[I][J] <> 0) and (GAME_GRID[I][J+1] <> 0) then collide := true;
+    end;
+  end;
+  CheckCollision := collide;
+end;
 procedure GameLoop;
 var
   time_index: LongInt;
@@ -130,8 +149,12 @@ begin
   inc(GAME_TICK);
   time_index := LongInt(GetTickCount);
 
+  if ((GAME_TICK mod 8) = 0) then begin
+  if (CheckCollision() = false) then AttachPiece()
+  else clearRow(12, PIECE_GRID);
+  end;
+
   DrawGrid(Form1.Canvas, Form1);
-  if (GAME_TICK mod 8) = 0 then clearRow(12, PIECE_GRID);
 
   DELTA_TIME := LongInt(GetTickCount) - time_index;
   if DELTA_TIME < FPS_CAP then
@@ -178,10 +201,10 @@ begin
   begin
     for J := 0 to 12 do GAME_GRID[I][J] := 0
   end;
-  GAME_GRID[0][12] := 2;
-  GAME_GRID[0][11] := 2;
-  GAME_GRID[0][10] := 2;
-  GAME_GRID[1][12] := 2;
+  GAME_GRID[0][12] := 3;
+  GAME_GRID[2][11] := 3;
+  GAME_GRID[2][10] := 3;
+  GAME_GRID[3][12] := 3;
   PIECE_GRID := GAME_GRID;
   NEXT_PIECE := random(length(PIECES))+1;
   SpawnNextPiece();
