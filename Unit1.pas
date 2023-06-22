@@ -91,7 +91,10 @@ begin
   if direction then
   begin
   // PRECHECK
-  for I := 0 to 103 do if (I mod 8 = 0) and (PIECE_GRID[I] <> 0) then Abort;
+  for I := 0 to 103 do begin
+  if (I mod 8 = 0) and (PIECE_GRID[I] <> 0) then Abort;
+  if (I mod 8 > 0) and (GAME_GRID[I-1] <> 0) and (PIECE_GRID[I] <> 0) then Abort;
+  end;
    // MODIFY
    for I := 0 to 103 do
     begin
@@ -105,7 +108,10 @@ begin
   end else
   begin
     // PRECHECK
-    for I := 103 downto 0 do if (I mod 8 = 7) and (PIECE_GRID[I] <> 0) then Abort;
+    for I := 103 downto 0 do begin
+    if (I mod 8 = 7) and (PIECE_GRID[I] <> 0) then Abort;
+    if (I mod 8 < 7) and (GAME_GRID[I+1] <> 0) and (PIECE_GRID[I] <> 0) then Abort;
+    end;
     // MODIFY
     for I := 103 downto 0 do
     begin
@@ -181,6 +187,7 @@ begin
   begin
     if CheckCollision then AttachPiece()
     else clearRow(12, PIECE_GRID);
+    if GAME_GRID[3] <> 0 then Form1.close();
   end;
 
   DrawGrid(Form1.Canvas, Form1);
