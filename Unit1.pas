@@ -32,6 +32,7 @@ var
   DELTA_TIME: integer;
   GAME_GRID: TGrid;
   PIECE_GRID: TGrid;
+  CURRENT_PIECE: Integer;
   NEXT_PIECE: Integer;
   Form1: TForm1;
 
@@ -139,6 +140,7 @@ begin
   begin
     PIECE_GRID[3+PIECES[NEXT_PIECE][I][1]+(PIECES[NEXT_PIECE][I][2]*8)] := color
   end;
+  CURRENT_PIECE := NEXT_PIECE;
   NEXT_PIECE := random(length(PIECES))+1;
 end;
 procedure Pause(ms: integer);
