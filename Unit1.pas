@@ -84,6 +84,7 @@ begin
   end;
 
 end;
+
 procedure MovePiece(direction: boolean);
 // direction: true-left | false-right
 var
@@ -123,14 +124,14 @@ begin
       end;
     end;
   end;
-
-
 end;
+
 procedure ClearGrid(var grid: TGrid);
 var I: integer;
 begin
  for I := 0 to length(grid)-1 do grid[I] := 0
 end;
+
 procedure SpawnNextPiece();
 var
   I, color: Integer;
@@ -156,6 +157,7 @@ begin
     current_time := GetTickCount;
   end;
 end;
+
 procedure AttachPiece();
 var
   I: Integer;
@@ -178,6 +180,8 @@ begin
   end;
   CheckCollision := collide;
 end;
+
+
 procedure GameLoop;
 var
   time_index: LongInt;
@@ -190,6 +194,7 @@ begin
     if CheckCollision then AttachPiece()
     else clearRow(12, PIECE_GRID);
     if GAME_GRID[3] <> 0 then Form1.close();
+
   end;
 
   DrawGrid(Form1.Canvas, Form1);
