@@ -3,7 +3,7 @@
 
 ### :de: [DE]
 #### Warum?
-Am Ende der Klassenstufe 11 stand im Informatikunterricht ein kleines Abschlussprojekt an. Wir (@logianer & @drehrumbum999) haben uns dazu entschieden, uns am Spieleklassiker Tetris zu versuchen.
+Am Ende der Klassenstufe 11 stand im Informatikunterricht ein kleines Abschlussprojekt an. Wir ([logianer](/logianer) & [drehrumbum999](/drehrumbum999)) haben uns dazu entschieden, uns am Spieleklassiker Tetris zu versuchen.
 
 ### Warum Delphi (Pascal)?
 Darauf gibt's ne ganz kurze Antwort: Weil unsere Schule richtig cool, hip und modern ist :sunglasses: *nicht*
