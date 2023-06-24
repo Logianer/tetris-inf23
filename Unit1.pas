@@ -228,11 +228,17 @@ procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   case Key of
+  // https://keycode.info
     32:
       begin
-        ClearGrid(PIECE_GRID);
+        ClearGrid(GAME_GRID);
+//        ClearGrid(PIECE_GRID);
         SpawnNextPiece();
       end;
+    188: begin
+    ClearGrid(PIECE_GRID);
+    SpawnNextPiece();
+    end;
     37, 65:
       begin
         MovePiece(true);
