@@ -144,6 +144,22 @@ begin
   CURRENT_PIECE := NEXT_PIECE;
   NEXT_PIECE := random(length(PIECES))+1;
 end;
+
+procedure CheckFullRows();
+var
+  I,J: Integer;
+  full_row: boolean;
+begin
+
+  for I := 0 to 12 do
+  begin
+
+    full_row := true;
+    for J := 0 to 7 do if GAME_GRID[(I*8)+J] = 0 then full_row := false;
+    if full_row = true then clearRow(I, GAME_GRID);
+  end;
+end;
+
 procedure Pause(ms: integer);
 var
   current_time: LongInt;
@@ -165,8 +181,11 @@ begin
   for I := 0 to 103 do if PIECE_GRID[I] <> 0 then GAME_GRID[I] := PIECE_GRID[I];
   ClearGrid(PIECE_GRID);
   Pause(1000);
+  CheckFullRows();
+  Pause(500);
   SpawnNextPiece();
 end;
+
 function CheckCollision(): boolean;
 var
   I: Integer;
