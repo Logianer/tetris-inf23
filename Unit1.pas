@@ -99,7 +99,7 @@ begin
   c.pen.style := psClear;
   c.brush.style := bsClear;
   c.pen.style := psSolid;
-  c.pen.color := clBtnShadow;
+  c.pen.color := clGray;
 
   // DRAW GRID
   for I := 0 to length(GAME_GRID) - 1 do
@@ -268,7 +268,9 @@ begin
       GAME_GRID[I] := PIECE_GRID[I];
   ClearGrid(PIECE_GRID);
   CheckFullRows();
+  GAME_STATE := gsPaused;
   Pause(500);
+  GAME_STATE := gsStart;
   SpawnNextPiece();
 end;
 
@@ -311,7 +313,7 @@ begin
   case GAME_STATE of
     gsStart:
       begin
-        if ((GAME_TICK mod 8) = 0) then
+        if ((GAME_TICK mod 10) = 0) then
           PieceTick();
         Draw(Form1);
       end;
@@ -328,6 +330,7 @@ procedure TForm1.FormKeyDown(Sender: TObject;
 
   var Key: Word; Shift: TShiftState);
 begin
+  if GAME_STATE = gsPaused then Abort;
   case Key of
     // https://keycode.info
     32, 38, 87: // SPACE, W, UP ARROW
