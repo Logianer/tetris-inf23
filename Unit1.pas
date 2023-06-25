@@ -80,18 +80,26 @@ begin
   end;
 end;
 
-procedure DrawGrid(c: TCanvas; form: TForm);
+procedure Draw(form: TForm);
 var
   I, size, size_x, size_y: integer;
+  Buffer: TBitmap;
+  c: TCanvas;
 begin
   size := 35;
   size_x := 8;
   size_y := 13;
+
+  Buffer := TBitmap.Create;
+  Buffer.Width := Form1.Width;
+  Buffer.Height := Form1.Height;
+  c := Buffer.Canvas;
+
   c.brush.style := bsSolid;
-  c.brush.color := clMenu;
   c.pen.style := psClear;
   c.brush.style := bsClear;
   c.pen.style := psSolid;
+  c.pen.color := clBtnShadow;
 
   // DRAW GRID
   for I := 0 to length(GAME_GRID) - 1 do
@@ -109,6 +117,7 @@ begin
     c.rectangle(15 + (I mod 8) * size, 15 + trunc(I / 8) * size,
       15 + size + (I mod 8) * size, 15 + size + trunc(I / 8) * size);
   end;
+  form.Canvas.Draw(0, 0, Buffer);
   Application.ProcessMessages;
 end;
 
@@ -192,13 +201,13 @@ end;
 procedure RotatePiece();
 var
   new_points: TPieceCoord;
-  I: Integer;
+  I: integer;
 begin
   new_points := RotatePoints(Pieces[CURRENT_PIECE], CURRENT_PIECE_ROTATION);
   ClearGrid(PIECE_GRID);
-    for I := 1 to 4 do
-      PIECE_GRID[CURRENT_PIECE_POS[1] + new_points[I][1] +
-        (new_points[I][2] + CURRENT_PIECE_POS[2]) * 8] := CURRENT_COLOR;
+  for I := 1 to 4 do
+    PIECE_GRID[CURRENT_PIECE_POS[1] + new_points[I][1] +
+      (new_points[I][2] + CURRENT_PIECE_POS[2]) * 8] := CURRENT_COLOR;
 end;
 
 procedure SpawnNextPiece();
@@ -208,8 +217,8 @@ begin
   CURRENT_COLOR := random(5) + 1;
   for I := 1 to 4 do
   begin
-    PIECE_GRID[3 + Pieces[NEXT_PIECE][I][1] + (Pieces[NEXT_PIECE][I][2]+1)*8] :=
-      CURRENT_COLOR
+    PIECE_GRID[3 + Pieces[NEXT_PIECE][I][1] + (Pieces[NEXT_PIECE][I][2] + 1) *
+      8] := CURRENT_COLOR
   end;
   CURRENT_PIECE_POS[1] := 3;
   CURRENT_PIECE_POS[2] := 1;
@@ -258,7 +267,6 @@ begin
     if PIECE_GRID[I] <> 0 then
       GAME_GRID[I] := PIECE_GRID[I];
   ClearGrid(PIECE_GRID);
-  Pause(500);
   CheckFullRows();
   Pause(500);
   SpawnNextPiece();
@@ -282,16 +290,16 @@ end;
 
 procedure PieceTick();
 begin
-    if CheckCollision then
-      AttachPiece()
-    else
-    begin
-      clearRow(12, PIECE_GRID);
-      inc(CURRENT_PIECE_POS[2])
-    end;
+  if CheckCollision then
+    AttachPiece()
+  else
+  begin
+    clearRow(12, PIECE_GRID);
+    inc(CURRENT_PIECE_POS[2])
+  end;
 
-    if GAME_GRID[3] <> 0 then
-      Form1.close();
+  if GAME_GRID[3] <> 0 then
+    Form1.close();
 end;
 
 procedure GameLoop;
@@ -303,11 +311,11 @@ begin
   case GAME_STATE of
     gsStart:
       begin
-        if ((GAME_TICK mod 8) = 0) then PieceTick();
-        DrawGrid(Form1.Canvas, Form1);
+        if ((GAME_TICK mod 8) = 0) then
+          PieceTick();
+        Draw(Form1);
       end;
   end;
-
 
   DELTA_TIME := LongInt(GetTickCount) - time_index;
   if DELTA_TIME < FPS_CAP then
@@ -364,7 +372,7 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   Randomize;
-  GAME_STATE:= gsStart;
+  GAME_STATE := gsStart;
   GAME_TICK := 0;
   DELTA_TIME := 0;
   Application.OnIdle := IdleHandler;
