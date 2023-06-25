@@ -23,9 +23,9 @@ type
   TPieces = array [1 .. 7] of TPieceCoord;
 
 CONST
-  FPS_CAP = trunc(1000 / 50);
-  COLORS: array [0 .. 6] of integer = (clMenu, $EF1111, $EFFE13, $00FF00,
-    $00FFFF, $0000FF, $FF00FF);
+  FPS_CAP = trunc(1000 / 30);
+  COLORS: array [0 .. 5] of integer = (clMenu, $AE4103, $3BCB72, $00D5FF,
+    $1C97FF, $1332FF);
   // Order: L, J, O, I, T, S, Z
   Pieces: TPieces = (((0, 0), (1, 0), (1, 1), (1, 2)),
     ((0, 0), (-1, 0), (-1, 1), (-1, 2)), ((0, 0), (1, 0), (0, 1), (1, 1)),
@@ -201,7 +201,7 @@ procedure SpawnNextPiece();
 var
   I: integer;
 begin
-  CURRENT_COLOR := random(6) + 1;
+  CURRENT_COLOR := random(5) + 1;
   for I := 1 to 4 do
   begin
     PIECE_GRID[3 + Pieces[NEXT_PIECE][I][1] + (Pieces[NEXT_PIECE][I][2] * 8)
