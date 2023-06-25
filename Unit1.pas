@@ -41,7 +41,7 @@ var
   PIECE_GRID: TGrid;
   CURRENT_PIECE: integer;
   CURRENT_COLOR: integer;
-  CURRENT_PIECE_POS: array[1..2] of integer;
+  CURRENT_PIECE_POS: array [1 .. 2] of integer;
   CURRENT_PIECE_ROTATION: integer;
   NEXT_PIECE: integer;
   Form1: TForm1;
@@ -50,7 +50,8 @@ implementation
 
 {$R *.dfm}
 
-function RotatePoints(const Points: TPieceCoord; rotation: integer): TPieceCoord;
+function RotatePoints(const Points: TPieceCoord; rotation: integer)
+  : TPieceCoord;
 var
   I: integer;
 begin
@@ -73,7 +74,8 @@ begin
           Result[I][1] := -Points[I][2];
           Result[I][2] := Points[I][1];
         end;
-      else Result := Points;
+    else
+      Result := Points;
     end;
   end;
 end;
@@ -189,12 +191,15 @@ begin
 end;
 
 procedure RotatePiece();
-var new_points: TPieceCoord;
-I: Integer;
+var
+  new_points: TPieceCoord;
+  I: Integer;
 begin
-  new_points := RotatePoints(PIECES[CURRENT_PIECE], CURRENT_PIECE_ROTATION);
+  new_points := RotatePoints(Pieces[CURRENT_PIECE], CURRENT_PIECE_ROTATION);
   ClearGrid(PIECE_GRID);
-  for I := 1 to 4 do PIECE_GRID[CURRENT_PIECE_POS[1] + new_points[I][1] + (new_points[I][2]+CURRENT_PIECE_POS[2])*8] := CURRENT_COLOR;
+    for I := 1 to 4 do
+      PIECE_GRID[CURRENT_PIECE_POS[1] + new_points[I][1] +
+        (new_points[I][2] + CURRENT_PIECE_POS[2]) * 8] := CURRENT_COLOR;
 end;
 
 procedure SpawnNextPiece();
@@ -287,7 +292,8 @@ begin
   begin
     if CheckCollision then
       AttachPiece()
-    else begin
+    else
+    begin
       clearRow(12, PIECE_GRID);
       inc(CURRENT_PIECE_POS[2])
     end;
@@ -314,7 +320,8 @@ begin
     32:
       begin
         inc(CURRENT_PIECE_ROTATION);
-        if CURRENT_PIECE_ROTATION = 4 then CURRENT_PIECE_ROTATION := 0;
+        if CURRENT_PIECE_ROTATION = 4 then
+          CURRENT_PIECE_ROTATION := 0;
         RotatePiece();
       end;
     190:
