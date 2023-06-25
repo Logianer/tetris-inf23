@@ -27,10 +27,10 @@ CONST
   COLORS: array [0 .. 5] of integer = (clMenu, $AE4103, $3BCB72, $00D5FF,
     $1C97FF, $1332FF);
   // Order: L, J, O, I, T, S, Z
-  Pieces: TPieces = (((0, 0), (1, 0), (1, 1), (1, 2)),
-    ((0, 0), (-1, 0), (-1, 1), (-1, 2)), ((0, 0), (1, 0), (0, 1), (1, 1)),
-    ((0, 0), (0, 1), (0, 2), (0, 3)), ((0, 0), (1, 0), (1, 1), (2, 0)),
-    ((0, 1), (1, 0), (1, 1), (2, 0)), ((0, 0), (1, 1), (1, 0), (2, 1)));
+  Pieces: TPieces = (((0, -1), (1, -1), (1, 0), (1, 1)),
+    ((0, -1), (-1, -1), (-1, 0), (-1, 1)), ((0, 0), (1, 0), (0, 1), (1, 1)),
+    ((0, -1), (0, 0), (0, 1), (0, 2)), ((0, 0), (-1, -1), (0, -1), (1, -1)),
+    ((0, 0), (1, 0), (-1, 1), (0, 1)), ((0, 0), (-1, 0), (0, 1), (1, 1)));
 
 var
 
@@ -204,11 +204,11 @@ begin
   CURRENT_COLOR := random(5) + 1;
   for I := 1 to 4 do
   begin
-    PIECE_GRID[3 + Pieces[NEXT_PIECE][I][1] + (Pieces[NEXT_PIECE][I][2] * 8)
-      ] := CURRENT_COLOR
+    PIECE_GRID[3 + Pieces[NEXT_PIECE][I][1] + (Pieces[NEXT_PIECE][I][2]+1)*8] :=
+      CURRENT_COLOR
   end;
   CURRENT_PIECE_POS[1] := 3;
-  CURRENT_PIECE_POS[2] := 0;
+  CURRENT_PIECE_POS[2] := 1;
   CURRENT_PIECE_ROTATION := 0;
   CURRENT_PIECE := NEXT_PIECE;
   NEXT_PIECE := random(length(Pieces)) + 1;
