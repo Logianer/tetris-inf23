@@ -6,6 +6,7 @@ object Form1: TForm1
   ClientHeight = 441
   ClientWidth = 464
   Color = clBtnFace
+  DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -5

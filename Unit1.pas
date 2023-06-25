@@ -34,7 +34,7 @@ CONST
 
 var
 
-  GAME_INIT: boolean;
+  GAME_STATE: (gsStart, gsPaused, gsGameOver);
   GAME_TICK: LongInt;
   DELTA_TIME: integer;
   GAME_GRID: TGrid;
@@ -90,7 +90,6 @@ begin
   c.brush.style := bsSolid;
   c.brush.color := clMenu;
   c.pen.style := psClear;
-  c.rectangle(0, 0, form.width, form.height);
   c.brush.style := bsClear;
   c.pen.style := psSolid;
 
@@ -259,7 +258,7 @@ begin
     if PIECE_GRID[I] <> 0 then
       GAME_GRID[I] := PIECE_GRID[I];
   ClearGrid(PIECE_GRID);
-  Pause(1000);
+  Pause(500);
   CheckFullRows();
   Pause(500);
   SpawnNextPiece();
@@ -281,15 +280,8 @@ begin
   CheckCollision := collide;
 end;
 
-procedure GameLoop;
-var
-  time_index: LongInt;
+procedure PieceTick();
 begin
-  inc(GAME_TICK);
-  time_index := LongInt(GetTickCount);
-
-  if ((GAME_TICK mod 8) = 0) then
-  begin
     if CheckCollision then
       AttachPiece()
     else
@@ -300,9 +292,22 @@ begin
 
     if GAME_GRID[3] <> 0 then
       Form1.close();
+end;
+
+procedure GameLoop;
+var
+  time_index: LongInt;
+begin
+  inc(GAME_TICK);
+  time_index := LongInt(GetTickCount);
+  case GAME_STATE of
+    gsStart:
+      begin
+        if ((GAME_TICK mod 8) = 0) then PieceTick();
+        DrawGrid(Form1.Canvas, Form1);
+      end;
   end;
 
-  DrawGrid(Form1.Canvas, Form1);
 
   DELTA_TIME := LongInt(GetTickCount) - time_index;
   if DELTA_TIME < FPS_CAP then
@@ -317,31 +322,33 @@ procedure TForm1.FormKeyDown(Sender: TObject;
 begin
   case Key of
     // https://keycode.info
-    32:
+    32, 38, 87: // SPACE, W, UP ARROW
       begin
         inc(CURRENT_PIECE_ROTATION);
         if CURRENT_PIECE_ROTATION = 4 then
           CURRENT_PIECE_ROTATION := 0;
         RotatePiece();
       end;
-    190:
+    190: // PERIOD
       begin
         ClearGrid(GAME_GRID);
-        // ClearGrid(PIECE_GRID);
-        SpawnNextPiece();
       end;
-    188:
+    188: // COMMA
       begin
         ClearGrid(PIECE_GRID);
         SpawnNextPiece();
       end;
-    37, 65:
+    37, 65: // LEFT ARROW, A
       begin
         MovePiece(true);
       end;
-    39, 68:
+    39, 68: // RIGHT ARROW, D
       begin
         MovePiece(false);
+      end;
+    40, 83: // DOWN ARROW, S
+      begin
+        PieceTick();
       end;
   end;
 end;
@@ -357,6 +364,7 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   Randomize;
+  GAME_STATE:= gsStart;
   GAME_TICK := 0;
   DELTA_TIME := 0;
   Application.OnIdle := IdleHandler;
