@@ -245,12 +245,11 @@ var
   full_row: boolean;
   full_row_counter: Integer;
 begin
-
+  full_row_counter := 0;
   for I := 0 to 12 do
   begin
 
     full_row := true;
-    full_row_counter := 0;
     for J := 0 to 7 do
       if GAME_GRID[(I * 8) + J] = 0 then
         full_row := false;
