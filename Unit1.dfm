@@ -20,6 +20,12 @@ object Form1: TForm1
   OnKeyDown = FormKeyDown
   PixelsPerInch = 96
   TextHeight = 18
+  object PiecePreview: TPaintBox
+    Left = 359
+    Top = 79
+    Width = 105
+    Height = 105
+  end
   object ScorePanel: TPanel
     Left = 279
     Top = 16

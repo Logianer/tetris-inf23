@@ -11,6 +11,7 @@ type
     ScorePanel: TPanel;
     Beenden: TButton;
     Button1: TButton;
+    PiecePreview: TPaintBox;
     procedure FormActivate(Sender: TObject);
     procedure IdleHandler(Sender: TObject; var Done: boolean);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -125,6 +126,21 @@ begin
       15 + size + (I mod 8) * size, 15 + size + trunc(I / 8) * size);
   end;
   form.Canvas.Draw(0, 0, Buffer);
+  with form1.PiecePreview do
+  begin
+    canvas.brush.color := clWhite;
+    canvas.pen.Style := psSolid;
+    canvas.pen.color := clBlack;
+    canvas.rectangle(1,1,Width-1,height-1);
+    canvas.pen.Style := psClear;
+    canvas.brush.color := clGray;
+    for I := 1 to 4 do
+    begin
+      Canvas.Rectangle(2+(PIECES[NEXT_PIECE][I][1]+3)*25,2+(PIECES[NEXT_PIECE][I][2]+1)*25,27+(PIECES[NEXT_PIECE][I][1]+3)*25,27+(PIECES[NEXT_PIECE][I][2]+1)*25);
+    end;
+  end;
+
+  // PIECE PREVIEW
   Application.ProcessMessages;
 end;
 
