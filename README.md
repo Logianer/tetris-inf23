@@ -2,6 +2,9 @@
 > Tetris made in Delphi XE7
 
 ### :de: [DE]
+### Was?
+Das ist unser Versuch am Spiel "Tetris", geschrieben in Delphi. Es hat ein paar kleine Bugs, aber man kann darüber hinwegsehen...
+
 #### Warum?
 Am Ende der Klassenstufe 11 stand im Informatikunterricht ein kleines Abschlussprojekt an. Wir ([logianer](//github.com/logianer) & [drehrumbum999](//github.com/drehrumbum999)) haben uns dazu entschieden, uns am Spieleklassiker Tetris zu versuchen.
 
