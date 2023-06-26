@@ -16,7 +16,7 @@ object Form3: TForm3
   TextHeight = 16
   object Label1: TLabel
     Left = 0
-    Top = 24
+    Top = 8
     Width = 417
     Height = 36
     Alignment = taCenter
@@ -33,16 +33,16 @@ object Form3: TForm3
     Left = 8
     Top = 66
     Width = 361
-    Height = 95
+    Height = 103
+    TabStop = False
     BorderStyle = bsNone
     Color = clMenu
     Ctl3D = True
-    Enabled = False
     Font.Charset = DEFAULT_CHARSET
     Font.Color = 11419907
     Font.Height = 16
     Font.Name = 'Consolas'
-    Font.Style = []
+    Font.Style = [fsBold]
     Lines.Strings = (
       'Steuerung:'
       #8592' '#8594' A D: Teil links-rechts bewegen'
@@ -52,7 +52,9 @@ object Form3: TForm3
       #8595' S: Teil schneller nach unten bewegen')
     ParentCtl3D = False
     ParentFont = False
+    ReadOnly = True
     TabOrder = 0
+    WantReturns = False
   end
   object Start: TButton
     Left = 144
