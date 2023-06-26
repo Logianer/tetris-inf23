@@ -30,7 +30,7 @@ implementation
 
 procedure TForm3.EndeClick(Sender: TObject);
 begin
-  close();
+  Application.Terminate;
 end;
 
 procedure TForm3.FormClose(Sender: TObject; var Action: TCloseAction);
