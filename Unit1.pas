@@ -323,7 +323,11 @@ begin
     inc(CURRENT_PIECE_POS[2])
   end;
 
-  if GAME_GRID[3] <> 0 then GAME_STATE := gsGameOver;
+  if GAME_GRID[3] <> 0 then begin
+  GAME_STATE := gsGameOver;
+  Application.CreateForm(TForm2, Form2);
+  Form2.ShowModal;
+  end;
 end;
 
 procedure GameLoop;

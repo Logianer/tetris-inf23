@@ -10,9 +10,11 @@ type
   TForm2 = class(TForm)
     OK: TButton;
     Panel1: TPanel;
+    Menü: TButton;
     procedure OKClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure MenüClick(Sender: TObject);
   private
     { Private-Deklarationen }
   public
@@ -36,9 +38,15 @@ procedure TForm2.FormShow(Sender: TObject);
 begin  Panel1.Caption := 'Score: '+Inttostr(Unit1.SCORE);
 end;
 
+procedure TForm2.MenüClick(Sender: TObject);
+begin
+  self.close;
+  Form1.Button1Click(Sender); // spart schreibarbeit
+end;
+
 procedure TForm2.OKClick(Sender: TObject);
 begin
-  self.CloseModal;
+  self.Close;
 end;
 
 end.

@@ -1,4 +1,4 @@
-object Form2: TForm2
+﻿object Form2: TForm2
   Left = 0
   Top = 0
   Caption = 'Game Over!'
@@ -31,5 +31,14 @@ object Form2: TForm2
     Height = 41
     Caption = 'Panel1'
     TabOrder = 1
+  end
+  object Menü: TButton
+    Left = 16
+    Top = 160
+    Width = 75
+    Height = 25
+    Caption = 'Men'#252
+    TabOrder = 2
+    OnClick = MenüClick
   end
 end
