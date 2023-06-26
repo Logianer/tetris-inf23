@@ -4,10 +4,11 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, Vcl.StdCtrls;
+  Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls;
 
 type
   TForm1 = class(TForm)
+    Panel1: TPanel;
     procedure FormCreate(Sender: TObject);
     procedure IdleHandler(Sender: TObject; var Done: boolean);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -35,6 +36,7 @@ CONST
 var
 
   GAME_STATE: (gsStart, gsPaused, gsGameOver);
+  SCORE: Integer;
   GAME_TICK: LongInt;
   DELTA_TIME: integer;
   GAME_GRID: TGrid;
@@ -231,17 +233,28 @@ procedure CheckFullRows();
 var
   I, J: integer;
   full_row: boolean;
+  full_row_counter: Integer;
 begin
 
   for I := 0 to 12 do
   begin
 
     full_row := true;
+    full_row_counter := 0;
     for J := 0 to 7 do
       if GAME_GRID[(I * 8) + J] = 0 then
         full_row := false;
-    if full_row = true then
-      clearRow(I, GAME_GRID);
+    if full_row = true then begin
+    clearRow(I, GAME_GRID);
+    inc(full_row_counter);
+    end;
+  end;
+  // SCORE SYSTEM: https://tetris.wiki/Scoring
+  case full_row_counter of
+  1: SCORE := SCORE+40;
+  2: SCORE := SCORE+100;
+  3: SCORE := SCORE+300;
+  4..13: SCORE := SCORE+(1200*(full_row_counter-3)); // ab 4: 1200 & für jede weitere 1200 p.
   end;
 end;
 
