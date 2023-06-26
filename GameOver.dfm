@@ -11,6 +11,7 @@ object Form2: TForm2
   Font.Name = 'Consolas'
   Font.Style = []
   OldCreateOrder = False
+  OnClose = FormClose
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 16

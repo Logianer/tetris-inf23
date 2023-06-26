@@ -12,6 +12,7 @@ type
     Panel1: TPanel;
     procedure OKClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private-Deklarationen }
   public
@@ -26,14 +27,18 @@ implementation
 Uses Unit1;
 {$R *.dfm}
 
+procedure TForm2.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  OKClick(Sender);
+end;
+
 procedure TForm2.FormShow(Sender: TObject);
 begin  Panel1.Caption := 'Score: '+Inttostr(Unit1.SCORE);
 end;
 
 procedure TForm2.OKClick(Sender: TObject);
 begin
-  Form1.Show();
-  self.hide();
+  self.CloseModal;
 end;
 
 end.

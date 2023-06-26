@@ -10,10 +10,13 @@ type
   TForm1 = class(TForm)
     ScorePanel: TPanel;
     Beenden: TButton;
-    procedure FormCreate(Sender: TObject);
+    Button1: TButton;
+    procedure FormActivate(Sender: TObject);
     procedure IdleHandler(Sender: TObject; var Done: boolean);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure BeendenClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure Button1Click(Sender: TObject);
   private
     { Private-Deklarationen }
   public
@@ -51,6 +54,7 @@ var
 
 implementation
 
+Uses Start;
 {$R *.dfm}
 
 function RotatePoints(const Points: TPieceCoord; rotation: integer)
@@ -394,11 +398,18 @@ end;
 procedure TForm1.BeendenClick(Sender: TObject);
 begin
   GAME_STATE := gsGameOver;
-  Form2.Show();
-  Form1.hide();
+  Application.CreateForm(TForm2, Form2);
+  Form2.ShowModal;
+//  Form1.hide();
 end;
 
-procedure TForm1.FormCreate(Sender: TObject);
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  GAME_STATE := gsGameOver;
+  close();
+end;
+
+procedure TForm1.FormActivate(Sender: TObject);
 begin
   Randomize;
   GAME_STATE := gsStart;
@@ -412,6 +423,11 @@ begin
   CURRENT_PIECE_ROTATION := 0;
   NEXT_PIECE := random(length(Pieces)) + 1;
   SpawnNextPiece();
+end;
+
+procedure TForm1.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  Form3.show();
 end;
 
 end.

@@ -14,7 +14,9 @@ object Form1: TForm1
   Font.Style = []
   OldCreateOrder = False
   Visible = True
-  OnCreate = FormCreate
+  OnActivate = FormActivate
+  OnClose = FormClose
+  OnCreate = FormActivate
   OnKeyDown = FormKeyDown
   PixelsPerInch = 96
   TextHeight = 18
@@ -33,9 +35,19 @@ object Form1: TForm1
     Top = 447
     Width = 88
     Height = 25
-    Caption = 'Beenden'
+    Caption = 'Game Over'
     TabOrder = 1
     TabStop = False
     OnClick = BeendenClick
+  end
+  object Button1: TButton
+    Left = 384
+    Top = 416
+    Width = 88
+    Height = 25
+    Caption = 'Men'#252
+    TabOrder = 2
+    TabStop = False
+    OnClick = Button1Click
   end
 end
