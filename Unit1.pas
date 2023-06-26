@@ -4,14 +4,16 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls;
+  Dialogs, Vcl.StdCtrls, GameOver, Vcl.ExtCtrls;
 
 type
   TForm1 = class(TForm)
-    Panel1: TPanel;
+    ScorePanel: TPanel;
+    Beenden: TButton;
     procedure FormCreate(Sender: TObject);
     procedure IdleHandler(Sender: TObject; var Done: boolean);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure BeendenClick(Sender: TObject);
   private
     { Private-Deklarationen }
   public
@@ -34,12 +36,11 @@ CONST
     ((0, 0), (1, 0), (-1, 1), (0, 1)), ((0, 0), (-1, 0), (0, 1), (1, 1)));
 
 var
-
   GAME_STATE: (gsStart, gsPaused, gsGameOver);
-  SCORE: Integer;
   GAME_TICK: LongInt;
   DELTA_TIME: integer;
   GAME_GRID: TGrid;
+  SCORE: Integer;
   PIECE_GRID: TGrid;
   CURRENT_PIECE: integer;
   CURRENT_COLOR: integer;
@@ -121,6 +122,11 @@ begin
   end;
   form.Canvas.Draw(0, 0, Buffer);
   Application.ProcessMessages;
+end;
+
+procedure UpdateScore();
+begin
+  Form1.ScorePanel.Caption := 'Score: '+InttoStr(SCORE);
 end;
 
 procedure clearRow(line_y: integer; var grid: TGrid);
@@ -251,11 +257,12 @@ begin
   end;
   // SCORE SYSTEM: https://tetris.wiki/Scoring
   case full_row_counter of
-  1: SCORE := SCORE+40;
-  2: SCORE := SCORE+100;
-  3: SCORE := SCORE+300;
-  4..13: SCORE := SCORE+(1200*(full_row_counter-3)); // ab 4: 1200 & für jede weitere 1200 p.
+  1: inc(SCORE, 40);
+  2: inc(SCORE, 100);
+  3: inc(SCORE, 300);
+  4..13: inc(SCORE,(1200*(full_row_counter-3))); // ab 4: 1200 & für jede weitere 1200 p.
   end;
+  UpdateScore();
 end;
 
 procedure Pause(ms: integer);
@@ -313,8 +320,7 @@ begin
     inc(CURRENT_PIECE_POS[2])
   end;
 
-  if GAME_GRID[3] <> 0 then
-    Form1.close();
+  if GAME_GRID[3] <> 0 then GAME_STATE := gsGameOver;
 end;
 
 procedure GameLoop;
@@ -385,10 +391,19 @@ begin
   Done := false;
 end;
 
+procedure TForm1.BeendenClick(Sender: TObject);
+begin
+  GAME_STATE := gsGameOver;
+  Form2.Show();
+  Form1.hide();
+end;
+
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   Randomize;
   GAME_STATE := gsStart;
+  SCORE := 0;
+  UpdateScore();
   GAME_TICK := 0;
   DELTA_TIME := 0;
   Application.OnIdle := IdleHandler;

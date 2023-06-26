@@ -18,7 +18,7 @@ object Form1: TForm1
   OnKeyDown = FormKeyDown
   PixelsPerInch = 96
   TextHeight = 18
-  object Panel1: TPanel
+  object ScorePanel: TPanel
     Left = 279
     Top = 16
     Width = 185
@@ -27,5 +27,15 @@ object Form1: TForm1
     Color = clSilver
     ParentBackground = False
     TabOrder = 0
+  end
+  object Beenden: TButton
+    Left = 384
+    Top = 447
+    Width = 88
+    Height = 25
+    Caption = 'Beenden'
+    TabOrder = 1
+    TabStop = False
+    OnClick = BeendenClick
   end
 end
