@@ -5199,15 +5199,15 @@ object Form1: TForm1
   PixelsPerInch = 96
   TextHeight = 18
   object PiecePreview: TPaintBox
-    Left = 359
+    Left = 304
     Top = 79
-    Width = 105
+    Width = 160
     Height = 105
   end
   object ScorePanel: TPanel
-    Left = 279
+    Left = 304
     Top = 16
-    Width = 185
+    Width = 160
     Height = 41
     Caption = 'Score: 0'
     Color = clSilver
