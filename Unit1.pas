@@ -382,15 +382,6 @@ begin
           CURRENT_PIECE_ROTATION := 0;
         RotatePiece();
       end;
-    190: // PERIOD
-      begin
-        ClearGrid(GAME_GRID);
-      end;
-    188: // COMMA
-      begin
-        ClearGrid(PIECE_GRID);
-        SpawnNextPiece();
-      end;
     37, 65: // LEFT ARROW, A
       begin
         MovePiece(true);
